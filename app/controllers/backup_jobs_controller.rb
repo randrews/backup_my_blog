@@ -1,24 +1,39 @@
 class BackupJobsController < ApplicationController
 
   def create
-    begin
+    with_error_trap do
       b=BackupJob.create(:url=>params[:url])
       b.save!
-      resp={:success=>true, :backup_job=>b.attributes}
-    rescue
-      resp={:success=>false, :error=>$!.to_s}
+      {:backup_job=>b.attributes}
     end
+  end
 
-    respond_to do |fmt|
-      fmt.json do 
-        render :json=>resp
-      end
+  def show
+    with_error_trap do
+      b=BackupJob.find(params[:id])
+      {:backup_job=>b.attributes}
     end
   end
 
   def index
     respond_to do |fmt|
       fmt.html { render :text=>"Hi!" }
+    end
+  end
+
+  private
+
+  def with_error_trap
+    begin
+      obj=yield
+      obj[:success]=true
+      obj
+    rescue
+      obj={:success=>false, :error=>$!.to_s}
+    end
+
+    respond_to do |fmt|
+      fmt.json { render :json=>obj }
     end
   end
 end
