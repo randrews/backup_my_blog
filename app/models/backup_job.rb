@@ -42,7 +42,7 @@ class BackupJob < ActiveRecord::Base
   end
 
   def filename
-    Digest::SHA1.hexdigest(url)+".txt"
+    File.join(%w{public finished-jobs},Digest::SHA1.hexdigest(url)+".txt")
   end
 
 end
