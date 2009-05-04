@@ -11,7 +11,8 @@ class BackupJobsController < ApplicationController
   def show
     with_error_trap do
       b=BackupJob.find(params[:id])
-      {:backup_job=>b.attributes}
+      fname=File.basename(b.filename)
+      {:backup_job=>b.attributes, :download_url=>"/finished-jobs/#{fname}"}
     end
   end
 
