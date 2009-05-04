@@ -18,8 +18,7 @@ class RssPull
   def rss first_preference=:rss_url, second_preference=:atom_url
     return @rss if @rss
 
-    url= send(first_preference) or send(second_preference)
-    raise "No RSS or ATOM feed found in this page's metadata" if url.nil?
+    url= send(first_preference) or send(second_preference) rescue raise("No RSS or ATOM feed found in this page's metadata")
     @rss=SimpleRSS.parse(open(url).read)
   end
 

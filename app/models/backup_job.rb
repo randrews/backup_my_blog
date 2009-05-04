@@ -3,7 +3,7 @@ class BackupJob < ActiveRecord::Base
 
   def run
     begin
-      rss_pull=RssPull.new(url)
+      rss_pull=RssPull.new(url) rescue raise("This seems to be a bad URL. Did you include the http:// ?")
 
       self.total=rss_pull.num_items
 
