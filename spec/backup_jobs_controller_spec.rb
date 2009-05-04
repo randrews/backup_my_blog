@@ -56,14 +56,37 @@ describe "BackupJobsController" do
     File.exists?(b.filename).should==true
   end
 
-
   it "should finish a job correctly" do
-    
+    id=make_job(@me)['id']
+    @app.post("/backup_jobs/start/#{id}.json").should==200
+
+    n=0
+    loop do
+      n+=1
+      status=job_status(id)['status']
+      break if status!='new' and status!='running'
+      sleep(1)
+
+      # Wait five minutes, then bail
+      raise "This job appears to be stuck" if n>300
+    end
+
+    job=job_status(id)
+    job['status'].should=='finished'
+    job['error'].nil?.should==true
   end
 
+  ##################################################
+
   def make_job url
-    @app.post('/backup_jobs.json',{:url=>@me}).should==200
+    @app.post('/backup_jobs.json',{:url=>url}).should==200
     json=ActiveSupport::JSON.decode(@app.response.body)
     json['backup_job']
   end
+
+  def job_status id
+    @app.get("/backup_jobs/#{id}.json").should==200
+    ActiveSupport::JSON.decode(@app.response.body)['backup_job']
+  end
+
 end
