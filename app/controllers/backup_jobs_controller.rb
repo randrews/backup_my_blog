@@ -15,6 +15,20 @@ class BackupJobsController < ApplicationController
     end
   end
 
+  def start
+    with_error_trap do
+      b=BackupJob.find(params[:id])
+      raise "This job is already running" if b.status=="running"
+      raise "This job has failed" if b.status=="error"
+
+      # We'll pretend to start it
+      b.status='running'
+      b.save!
+
+      {:backup_job=>b.attributes}
+    end
+  end
+
   def index
     respond_to do |fmt|
       fmt.html { render :text=>"Hi!" }

@@ -44,4 +44,15 @@ describe "BackupJobsController" do
     job['success'].should==false
     job['error'].nil?.should==false
   end
+
+  it "should start a job" do
+    @app.post('/backup_jobs.json',{:url=>@me}).should==200
+    json=ActiveSupport::JSON.decode(@app.response.body)
+    json['backup_job']['status'].should=='new'
+
+    id=json['backup_job']['id']
+    @app.post("/backup_jobs/start/#{id}.json").should==200
+    json=ActiveSupport::JSON.decode(@app.response.body)
+    json['backup_job']['status'].should=='running'
+  end
 end
