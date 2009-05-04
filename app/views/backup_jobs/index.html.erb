@@ -81,7 +81,8 @@ function updateProgressBar(job){
     if(job.status!='new'){
 	var finished=job.finished || 0;
 	var total=job.total;
-	$('backupStatusDiv').update(finished+"/"+total);
+	$('backupStatusCount').update("Downloading articles: "+finished+"/"+total);
+	$('progress').style.width=(finished/total*100)+"%";
     }
     return (job.status=='finished' || job.status=='error');
 }
@@ -97,12 +98,18 @@ function showFinished(url){
 <h1>BackupMyBlog</h1>
 
 <div id="backupFormDiv">
-    Enter the URL of your blog:
-<input type="text" name="url" id="url">
-<input type="button" value="Backup" onclick="startBackup()">
+  Enter the URL of your blog (including the http:// part):
+  <input type="text" name="url" id="url" value="http://rbandrews.livejournal.com">
+  <input type="button" value="Backup" onclick="startBackup()">
 </div>
 
-    <div id="backupStatusDiv" style="display:none">
-    </div>
-<div id="backupLinkDiv" style="display:none">Complete! Download your backup <a href="" id="backupLink">here</a>.</div>
+<div id="backupStatusDiv" style="display:none">
+  <div id="progressBar"><div id="progress"></div></div>
+  <div id="backupStatusCount">Reading the RSS feed...</div>
+</div>
+
+<div id="backupLinkDiv" style="display:none">
+  Complete! Download your backup <a href="" id="backupLink">here</a>.
+</div>
+
 <div id="backupErrorDiv" style="display:none"></div>

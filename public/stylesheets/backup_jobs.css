@@ -1,0 +1,58 @@
+body
+{ 
+  font-family: Verdana;
+  background: #dddddd;
+  }
+
+h1
+{ 
+  text-align: center;
+ }
+
+#url
+{ 
+  display: block;
+  margin: 5;
+  width: 490;
+ }
+
+#backupFormDiv , #backupLinkDiv , #backupErrorDiv , #backupStatusDiv
+{ 
+  padding: 5;
+  margin-left: auto;
+  margin-right: auto;
+  width: 500;
+  height: 100;
+ }
+
+#backupFormDiv , #backupStatusDiv
+{ 
+  background: white;
+ }
+
+#backupLinkDiv
+{ 
+  background: #ccffcc;
+ }
+
+#backupErrorDiv
+{ 
+  background: #ffcccc;
+ }
+
+#progressBar
+{ 
+  width: 490;
+  height: 32;
+  background: #666666;
+  border: 2px solid black;
+  position: relative;
+ }
+
+#progress
+{ 
+  height: 32;
+  background: #9999ff;
+  position: absolute;
+  left: 0;
+ }
