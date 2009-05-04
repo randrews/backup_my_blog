@@ -15,6 +15,10 @@ class RssPull
     type_rel_url "application/rss+xml"
   end
 
+  def to_s
+    "<RssPull #{@url}>"
+  end
+
   private
 
   def type_rel_url type
