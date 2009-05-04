@@ -15,8 +15,10 @@ class RssPull
     type_rel_url "application/rss+xml"
   end
 
-  def to_s
-    "<RssPull #{@url}>"
+  def rss first_preference=rss_url, second_preference=atom_url
+    url= first_preference or second_preference
+    raise "No RSS or ATOM feed found in this page's metadata" if url.nil?
+    SimpleRSS.parse(open(url).read)
   end
 
   private

@@ -19,4 +19,12 @@ describe "RssPull" do
     @me.atom_url.should=="http://rbandrews.livejournal.com/data/atom"
     @yegge.atom_url.should=="http://steve-yegge.blogspot.com/feeds/posts/default"
   end
+
+  it "should make an RSS reader successfully" do
+    @me.rss.nil?.should==false
+  end
+
+  it "should make an ATOM reader successfully" do
+    @me.rss(@me.atom_url).nil?.should==false
+  end
 end
