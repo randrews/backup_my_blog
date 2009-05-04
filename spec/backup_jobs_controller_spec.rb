@@ -45,15 +45,21 @@ describe "BackupJobsController" do
   end
 
   it "should start a job" do
+    `rm -f public/finished-jobs/*`
     id=make_job(@me)['id']
 
     @app.post("/backup_jobs/start/#{id}.json").should==200
     json=ActiveSupport::JSON.decode(@app.response.body)
     json['success'].should==true
 
-    sleep(1) # Wait a sec to make sure it's going.
-    b=BackupJob.find(id)
-    File.exists?(b.filename).should==true
+    loop do
+      b=BackupJob.find(id)
+      if b.status=='running'
+        File.exists?(b.filename).should==true
+        break
+      end
+      sleep(1) # Wait a sec to make sure it's going.
+    end
   end
 
   it "should finish a job correctly" do

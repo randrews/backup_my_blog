@@ -3,11 +3,11 @@ class BackupJob < ActiveRecord::Base
 
   def run
     begin
-      self.status='running' ; save
-
       rss_pull=RssPull.new(url)
 
-      self.total=rss_pull.num_items ; save
+      self.total=rss_pull.num_items
+
+      self.status='running' ; save
 
       rss_pull.each do |item|
         handle_item item

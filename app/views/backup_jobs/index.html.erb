@@ -1,5 +1,48 @@
+<script type="text/javascript">
+function startBackup(){
+    new Ajax.Request('/backup_jobs.json',{method:'POST',
+					  parameters:{url:$F('url')},
+					  onSuccess:
+					  function(req){
+					      findError(req,function(json){
+						      runJob(json.backup_job);
+						  });
+					  }});
+
+    /*
+    new PeriodicalExecuter(
+			   function() {
+			       new Ajax.Updater('avg', '/grades/get_averages',
+						{asynchronous:true})
+				   },
+				   10); */
+ }
+
+     function findError(request,fn){
+	 if(req.responseJSON.success){
+	     fn(req.responseJSON);
+	 }else{
+	     alert(req.responseJSON.error);
+	 }
+     }
+
+function runJob(job){
+    new Ajax.Request('/backup_jobs/start/'+job.id+'.json',
+		     {method:'POST',
+			     onSuccess:
+			 function(req){
+			     findError(req,function(json){
+				     
+				 });
+			 }});
+}
+</script>
+
 <h1>BackupMyBlog</h1>
 
-Enter your blog's URL:
+    Enter the URL of your blog:
 <input type="text" name="url" id="url">
-<input type="button" value="Backup">
+<input type="button" value="Backup" onclick="startBackup()">
+
+<div id="backupStatusDiv" style="display:none"></div>
+<div id="backupLinkDiv" style="display:none">Complete! Download your backup <a href="" id="BackupLink">here</a>.</div>
