@@ -27,4 +27,10 @@ describe "RssPull" do
   it "should make an ATOM reader successfully" do
     @me.rss(@me.atom_url).nil?.should==false
   end
+
+  it "should iterate over items with each" do
+    @me.each do |item|
+      item.nil?.should==false
+    end
+  end
 end

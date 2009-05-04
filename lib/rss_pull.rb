@@ -21,6 +21,13 @@ class RssPull
     SimpleRSS.parse(open(url).read)
   end
 
+  def each
+    raise "Expected a block" unless block_given?
+    rss.items.each do |item|
+      yield item
+    end
+  end
+
   private
 
   def type_rel_url type
