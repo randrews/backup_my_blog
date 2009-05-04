@@ -1,3 +1,5 @@
+require "config/environment.rb"
+
 describe "BackupJob" do
   before :all do
     @me="http://rbandrews.livejournal.com"

@@ -1,4 +1,5 @@
 class BackupJob < ActiveRecord::Base
+  validates_presence_of :url
 
   def run
     begin
