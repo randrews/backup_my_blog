@@ -24,6 +24,10 @@ class BackupJob < ActiveRecord::Base
     end
   end
 
+  def filename
+    File.join(%w{public finished-jobs},Digest::SHA1.hexdigest(url)+".txt")
+  end
+
   private
 
   def handle_item item
@@ -40,10 +44,6 @@ class BackupJob < ActiveRecord::Base
 
   def file_handle
     @file_handle ||= File.open(filename,'w')
-  end
-
-  def filename
-    File.join(%w{public finished-jobs},Digest::SHA1.hexdigest(url)+".txt")
   end
 
 end
