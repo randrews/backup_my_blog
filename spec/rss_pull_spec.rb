@@ -33,4 +33,8 @@ describe "RssPull" do
       item.nil?.should==false
     end
   end
+
+  it "should give me the number of items in the feed" do
+    @me.num_items.should > 0
+  end
 end

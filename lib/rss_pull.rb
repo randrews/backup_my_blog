@@ -16,9 +16,11 @@ class RssPull
   end
 
   def rss first_preference=rss_url, second_preference=atom_url
+    return @rss if @rss
+
     url= first_preference or second_preference
     raise "No RSS or ATOM feed found in this page's metadata" if url.nil?
-    SimpleRSS.parse(open(url).read)
+    @rss=SimpleRSS.parse(open(url).read)
   end
 
   def each
@@ -26,6 +28,10 @@ class RssPull
     rss.items.each do |item|
       yield item
     end
+  end
+
+  def num_items
+    rss.items.size
   end
 
   private
