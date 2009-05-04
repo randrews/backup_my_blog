@@ -25,7 +25,7 @@ describe "BackupJob" do
   end
 
   it "should populate total" do
-    b=BackupJob.new(:url=>@yegge) # let's use him for a change
+    b=BackupJob.new(:url=>@me) # Using Yegge makes the specs take WAY too long.
     b.run
     b.total.should==b.finished
     b.total.should>0
