@@ -1,48 +1,92 @@
 <script type="text/javascript">
+     var POLLER=null;
+
 function startBackup(){
-    new Ajax.Request('/backup_jobs.json',{method:'POST',
-					  parameters:{url:$F('url')},
-					  onSuccess:
-					  function(req){
-					      findError(req,function(json){
-						      runJob(json.backup_job);
-						  });
-					  }});
+    new Ajax.Request('/backup_jobs.json',
+		     {method:'POST',
+			     parameters:{url:$F('url')},
+			     onSuccess:function(req){
+			     findError(req,function(json){
+				     runJob(json.backup_job);
+				 });
+			 }
+		     });
+}
 
-    /*
-    new PeriodicalExecuter(
-			   function() {
-			       new Ajax.Updater('avg', '/grades/get_averages',
-						{asynchronous:true})
-				   },
-				   10); */
- }
-
-     function findError(request,fn){
-	 if(req.responseJSON.success){
-	     fn(req.responseJSON);
-	 }else{
-	     alert(req.responseJSON.error);
-	 }
-     }
+function findError(req,fn){
+    if(req.responseJSON.success){
+	fn(req.responseJSON);
+    }else{
+	POLLER.stop();
+	alert(req.responseJSON.error);
+    }
+}
 
 function runJob(job){
+    JOB=job;
     new Ajax.Request('/backup_jobs/start/'+job.id+'.json',
 		     {method:'POST',
 			     onSuccess:
 			 function(req){
 			     findError(req,function(json){
-				     
+				     $('backupFormDiv').style.display='none';
+				     $('backupStatusDiv').style.display='block';
+				     startPolling(job);
 				 });
 			 }});
+}
+
+function startPolling(job){
+    POLLER=new PeriodicalExecuter(function(poller){
+	    new Ajax.Request('/backup_jobs/'+job.id+'.json',
+    {method:"GET",
+	onSuccess:function(req){
+	    findError(req,function(json){
+		    try{
+			if(updateProgressBar(json.backup_job)){
+			    poller.stop();
+			    showFinished(json.download_url);
+			}
+		    }catch(e){
+			$('backupStatusDiv').style.display='none';
+			$('backupErrorDiv').style.display='block';
+			$('backupErrorDiv').update(e);
+			poller.stop();
+		    }
+		});
+	}});
+	}, 1);
+}
+
+function updateProgressBar(job){
+    if(job.status=='error'){
+	throw job.error;
+    }
+
+    if(job.status!='new'){
+	var finished=job.finished || 0;
+	var total=job.total || 0;
+	$('backupStatusDiv').update(finished+"/"+total);
+    }
+    return (job.status=='finished' || job.status=='error');
+}
+
+function showFinished(url){
+    $('backupStatusDiv').style.display='none';
+    $('backupLink').href=url;
+    $('backupLinkDiv').style.display='block';
 }
 </script>
 
 <h1>BackupMyBlog</h1>
 
+<div id="backupFormDiv">
     Enter the URL of your blog:
 <input type="text" name="url" id="url">
 <input type="button" value="Backup" onclick="startBackup()">
+</div>
 
-<div id="backupStatusDiv" style="display:none"></div>
-<div id="backupLinkDiv" style="display:none">Complete! Download your backup <a href="" id="BackupLink">here</a>.</div>
+    <div id="backupStatusDiv" style="display:none">
+    </div>
+<div id="backupLinkDiv" style="display:none">Complete! Download your backup <a href="" id="backupLink">here</a>.</div>
+<div id="backupErrorDiv" style="display:none"></div>
