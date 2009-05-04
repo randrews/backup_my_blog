@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(:version => 20090504054100) do
     t.integer  "total"
     t.integer  "finished",   :default => 0
     t.string   "path"
-    t.string   "url"
+    t.string   "url",                           :null => false
     t.string   "status",     :default => "new"
     t.string   "error"
     t.datetime "created_at"
