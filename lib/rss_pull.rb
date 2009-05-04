@@ -15,10 +15,10 @@ class RssPull
     type_rel_url "application/rss+xml"
   end
 
-  def rss first_preference=rss_url, second_preference=atom_url
+  def rss first_preference=:rss_url, second_preference=:atom_url
     return @rss if @rss
 
-    url= first_preference or second_preference
+    url= send(first_preference) or send(second_preference)
     raise "No RSS or ATOM feed found in this page's metadata" if url.nil?
     @rss=SimpleRSS.parse(open(url).read)
   end
@@ -39,6 +39,11 @@ class RssPull
   def type_rel_url type
     els=doc.search("head/link[@rel='alternate'][@type='#{type}']")
     raise "No URLs of type #{type} found" if els.size==0
-    els[0]['href']
+    uri=URI.parse els[0]['href']
+    if uri.relative?
+      URI.parse(@url).merge(uri).to_s
+    else
+      uri.to_s
+    end
   end 
 end
