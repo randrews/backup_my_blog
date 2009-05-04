@@ -1,6 +1,10 @@
 <script type="text/javascript">
-     var POLLER=null;
+     /* The indentation on this JS is somewhat bad. Emacs' fault. */
 
+     var POLLER=null; // This is a PeriodicalExecuter, in case findError has a problem it can shut down polling.
+
+// Handler for the backup button
+// Creates a job and calls runJob
 function startBackup(){
     new Ajax.Request('/backup_jobs.json',
 		     {method:'POST',
@@ -13,15 +17,23 @@ function startBackup(){
 		     });
 }
 
+// Utility function, takes a request and complains if something went wrong in it.
+// Otherwise, sends the JSON in the request to its second parameter.
 function findError(req,fn){
     if(req.responseJSON.success){
 	fn(req.responseJSON);
     }else{
-	POLLER.stop();
-	alert(req.responseJSON.error);
+	if(POLLER){POLLER.stop();}
+	$('backupStatusDiv').style.display='none';
+	$('backupLinkDiv').style.display='none';
+	$('backupFormDiv').style.display='none';
+	$('backupErrorDiv').style.display='block';
+	$('backupErrorDiv').update(req.responseJSON.error);
     }
 }
 
+// Starts a job running, hides the form and shows the progress bar
+// Starts polling.
 function runJob(job){
     JOB=job;
     new Ajax.Request('/backup_jobs/start/'+job.id+'.json',
@@ -36,6 +48,7 @@ function runJob(job){
 			 }});
 }
 
+// Polls once a second to see job status.
 function startPolling(job){
     POLLER=new PeriodicalExecuter(function(poller){
 	    new Ajax.Request('/backup_jobs/'+job.id+'.json',
@@ -58,6 +71,8 @@ function startPolling(job){
 	}, 1);
 }
 
+// Called by POLLER to do the heavy lifting of updating the progress bar.
+// Returns true if the polling should stop.
 function updateProgressBar(job){
     if(job.status=='error'){
 	throw job.error;
@@ -65,12 +80,13 @@ function updateProgressBar(job){
 
     if(job.status!='new'){
 	var finished=job.finished || 0;
-	var total=job.total || 0;
+	var total=job.total;
 	$('backupStatusDiv').update(finished+"/"+total);
     }
     return (job.status=='finished' || job.status=='error');
 }
 
+// Hides the progress bar and shows the download link.
 function showFinished(url){
     $('backupStatusDiv').style.display='none';
     $('backupLink').href=url;
