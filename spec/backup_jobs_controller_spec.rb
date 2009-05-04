@@ -26,15 +26,14 @@ describe "BackupJobsController" do
   end
 
   it "should show one that I just made" do
-    @app.post('/backup_jobs.json',{:url=>@me}).should==200
-    json=ActiveSupport::JSON.decode(@app.response.body)
+    made=make_job(@me)
+    id=made['id']
 
-    id=json['backup_job']['id']
     @app.get("/backup_jobs/#{id}.json").should==200
     job=ActiveSupport::JSON.decode(@app.response.body)
 
     job['success'].should==true
-    job['backup_job']['url'].should==json['backup_job']['url']
+    job['backup_job']['url'].should==made['url']
   end
 
   it "should fail to find a bad one" do
@@ -46,11 +45,8 @@ describe "BackupJobsController" do
   end
 
   it "should start a job" do
-    @app.post('/backup_jobs.json',{:url=>@me}).should==200
-    json=ActiveSupport::JSON.decode(@app.response.body)
-    json['backup_job']['status'].should=='new'
+    id=make_job(@me)['id']
 
-    id=json['backup_job']['id']
     @app.post("/backup_jobs/start/#{id}.json").should==200
     json=ActiveSupport::JSON.decode(@app.response.body)
     json['success'].should==true
@@ -58,5 +54,16 @@ describe "BackupJobsController" do
     sleep(1) # Wait a sec to make sure it's going.
     b=BackupJob.find(id)
     File.exists?(b.filename).should==true
+  end
+
+
+  it "should finish a job correctly" do
+    
+  end
+
+  def make_job url
+    @app.post('/backup_jobs.json',{:url=>@me}).should==200
+    json=ActiveSupport::JSON.decode(@app.response.body)
+    json['backup_job']
   end
 end
