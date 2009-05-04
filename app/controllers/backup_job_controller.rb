@@ -1,2 +1,0 @@
-class BackupJobController < ApplicationController
-end
