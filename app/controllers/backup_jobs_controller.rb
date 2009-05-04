@@ -21,11 +21,11 @@ class BackupJobsController < ApplicationController
       raise "This job is already running" if b.status=="running"
       raise "This job has failed" if b.status=="error"
 
-      # We'll pretend to start it
-      b.status='running'
-      b.save!
+      spawn do
+        b.run
+      end
 
-      {:backup_job=>b.attributes}
+      {}
     end
   end
 

@@ -6,6 +6,10 @@ describe "BackupJob" do
     @yegge="http://steve-yegge.blogspot.com/"
   end
 
+  after :all do
+    `rm -rf public/finished-jobs/*.txt`
+  end
+
   it "should finish successfully with a good URL" do
     b=BackupJob.new(:url=>@me)
     b.run

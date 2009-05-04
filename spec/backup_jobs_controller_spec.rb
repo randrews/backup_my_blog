@@ -53,6 +53,10 @@ describe "BackupJobsController" do
     id=json['backup_job']['id']
     @app.post("/backup_jobs/start/#{id}.json").should==200
     json=ActiveSupport::JSON.decode(@app.response.body)
-    json['backup_job']['status'].should=='running'
+    json['success'].should==true
+
+    sleep(1) # Wait a sec to make sure it's going.
+    b=BackupJob.find(id)
+    File.exists?(b.filename).should==true
   end
 end
