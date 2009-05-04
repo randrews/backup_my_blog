@@ -24,4 +24,11 @@ describe "BackupJob" do
     b.error.nil?.should==true
   end
 
+  it "should populate total" do
+    b=BackupJob.new(:url=>@yegge) # let's use him for a change
+    b.run
+    b.total.should==b.finished
+    b.total.should>0
+  end
+
 end

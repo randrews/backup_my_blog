@@ -4,7 +4,11 @@ class BackupJob < ActiveRecord::Base
     begin
       self.status='running' ; save
 
-      RssPull.new(url).each do |item|
+      rss_pull=RssPull.new(url)
+
+      self.total=rss_pull.num_items ; save
+
+      rss_pull.each do |item|
         logger.info "I should be saving #{item.link} right now"
 
         self.finished+=1 ; save
