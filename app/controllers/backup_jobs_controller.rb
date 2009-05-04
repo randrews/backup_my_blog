@@ -31,7 +31,7 @@ class BackupJobsController < ApplicationController
 
   def index
     respond_to do |fmt|
-      fmt.html { render :text=>"Hi!" }
+      fmt.html
     end
   end
 
