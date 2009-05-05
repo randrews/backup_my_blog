@@ -2,22 +2,27 @@ How to install:
 
 First, install the gems:
 
-sudo gem install simple-rss
-sudo gem install hpricot
+     sudo gem install simple-rss
+     sudo gem install hpricot
+
+We need to add a couple directories, too:
+
+     mkdir public/finished-jobs
+     mkdir log
 
 Now build the data model:
 
-rake db:migrate
+     rake db:migrate
 
 And then it should run:
 
-ruby script/server
+     ruby script/server
 
 Anatomy:
 
 All the tests are in spec, which you can run with:
 
-rake spec
+     rake spec
 
 (install RSpec first)
 
