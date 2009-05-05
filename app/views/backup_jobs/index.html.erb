@@ -28,7 +28,7 @@ function findError(req,fn){
 	$('backupLinkDiv').style.display='none';
 	$('backupFormDiv').style.display='none';
 	$('backupErrorDiv').style.display='block';
-	$('backupErrorDiv').update(req.responseJSON.error);
+	$('backupError').update(req.responseJSON.error);
     }
 }
 
@@ -63,7 +63,7 @@ function startPolling(job){
 		    }catch(e){
 			$('backupStatusDiv').style.display='none';
 			$('backupErrorDiv').style.display='block';
-			$('backupErrorDiv').update(e);
+			$('backupError').update(e);
 			poller.stop();
 		    }
 		});
@@ -93,6 +93,18 @@ function showFinished(url){
     $('backupLink').href=url;
     $('backupLinkDiv').style.display='block';
 }
+
+function resetPage(){
+    $('backupFormDiv').style.display='block';
+    $('backupStatusDiv').style.display='none';
+    $('backupErrorDiv').style.display='none';
+    $('backupLinkDiv').style.display='none';
+
+    $('backupLink').href='';
+    $('progress').style.width="0%";
+    $('backupStatusCount').update("Reading the RSS feed...");
+    POLLER=null;
+}
 </script>
 
 <h1>BackupMyBlog</h1>
@@ -110,6 +122,10 @@ function showFinished(url){
 
 <div id="backupLinkDiv" style="display:none">
   Complete! Download your backup <a href="" id="backupLink">here</a>.
+  <a href="javascript:resetPage()" class="again">Again!</a>
 </div>
 
-<div id="backupErrorDiv" style="display:none"></div>
+<div id="backupErrorDiv" style="display:none">
+  <div id="backupError"></div>
+  <a href="javascript:resetPage()" class="again">Again!</a>
+</div>

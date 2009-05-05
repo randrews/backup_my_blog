@@ -23,6 +23,7 @@ h1
   margin-right: auto;
   width: 500;
   height: 100;
+  position: relative;
  }
 
 #backupFormDiv , #backupStatusDiv
@@ -56,4 +57,11 @@ h1
   background: #9999ff;
   position: absolute;
   left: 0;
+ }
+
+.again
+{ 
+  position:absolute;
+  right: 5;
+  bottom: 0;
  }
