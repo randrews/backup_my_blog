@@ -1,5 +1,24 @@
-Gems required:
+How to install:
 
-simple-rss
-hpricot
+First, install the gems:
 
+sudo gem install simple-rss
+sudo gem install hpricot
+
+Now build the data model:
+
+rake db:migrate
+
+And then it should run:
+
+ruby script/server
+
+Anatomy:
+
+All the tests are in spec, which you can run with:
+
+rake spec
+
+(install RSpec first)
+
+Everything is in the normal places, plus there's a wrapper class in lib/rss_pull.rb
